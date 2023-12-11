@@ -20,10 +20,12 @@ const ProductScreen = () => {
                 headers: { Authorization: `Bearer ${token}` }
             })
             setProducts(response);
+            console.log(products)
         } catch (error) {
             console.log(error);
         }
     }
+
     const eliminate = async (id) => {
         try {
             const response = await AxiosClient({
@@ -33,10 +35,11 @@ const ProductScreen = () => {
             })
         } catch (error) {
             console.log(error);
-        }finally{
+        } finally {
             getAllProducts();
         }
     }
+
     useEffect(() => {
         getAllProducts();
     }, []);
@@ -59,6 +62,18 @@ const ProductScreen = () => {
             fixed: true,
         },
         {
+            name: "Imagen",
+            cell: (row) => (
+                // En tu componente React
+                <img
+                    src={row.imageUrl}
+                    alt={`Imagen de ${row.titulo}`}
+                    style={{ width: '50px' }}
+                />
+
+            ),
+        },
+        {
             name: "ACCIONES",
             cell: (row) => (
                 <>
@@ -79,26 +94,20 @@ const ProductScreen = () => {
                 </>
             ),
         },
-    ])
-
+    ], [eliminate]);
 
     return (
-        < >
+        <>
             <div style={{ justifyContent: 'ceneter', alignItems: "center", backgroundColor: "transparent", height: "92vh", padding: 20 }}>
                 <div>
                     <div className="App">
                         <DataTable
-
-
                             title={
-
                                 <div style={{ display: "flex", flexDirection: "row" }}>
-
                                     <div style={{ width: "95%", paddingTop: 3 }}>
                                         Productos
                                     </div>
-
-                                    <div >
+                                    <div>
                                         <FeatherIcon className='DataIcon' icon={'plus'} onClick={() => setShowModalForm(true)} style={{ height: 40, width: 40 }} />
                                     </div>
                                 </div>
@@ -117,10 +126,10 @@ const ProductScreen = () => {
                 </div>
             </div>
             <ProductForm
-            isOpen={showModalForm}
-            data={getAllProducts}
-            token={token}
-            onClose={() => setShowModalForm(false)}/>
+                isOpen={showModalForm}
+                data={getAllProducts}
+                token={token}
+                onClose={() => setShowModalForm(false)} />
         </>
     );
 }

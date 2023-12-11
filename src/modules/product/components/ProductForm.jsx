@@ -1,42 +1,73 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useFormik } from 'formik';
-import * as yup from "yup";
+import * as yup from 'yup';
 import AxiosClient from '../../../shared/plugins/axios';
 import { Button, Col, FormGroup, Modal, Row, Form, Alert } from 'react-bootstrap';
 
-const ProductForm = ({isOpen , data , onClose, token}) => {
+const ProductForm = ({ isOpen, data, onClose, token }) => {
+    const [image, setImage] = useState(null);
+
     const form = useFormik({
         initialValues: {
-            titulo: "",
-            descripcion: ""
+            titulo: '',
+            descripcion: '',
+            imagen: ''
         },
         validationSchema: yup.object().shape({
-            titulo: yup.string().required("Campo obligatorio"),
-            descripcion: yup.string().required("Campo obligatorio")
-
+            titulo: yup.string().required('Campo obligatorio'),
+            descripcion: yup.string().required('Campo obligatorio'),
         }),
         onSubmit: async (values) => {
             try {
+                const base64Image = await convertImageToBase64(image);
+                values.imagen = base64Image;
                 const response = await AxiosClient({
-                    method: "POST",
-                    url: "/producto/",
+                    method: 'POST',
+                    url: '/producto/',
                     data: JSON.stringify(values),
-                    headers: { Authorization: `Bearer ${token}` }
-                })
-                if(!response.error){
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+
+                if (!response.error) {
                     data();
                     handleClose();
                 }
             } catch (error) {
                 console.log(error);
             }
+        },
+    });
+
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+
+        if (file) {
+            setImage(file);
         }
-    })
+    };
+
+    const convertImageToBase64 = (imageFile) => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+
+            reader.onloadend = () => {
+                resolve(reader.result);
+            };
+
+            reader.onerror = (error) => {
+                reject(error);
+            };
+
+            reader.readAsDataURL(imageFile);
+        });
+    };
 
     const handleClose = () => {
         form.resetForm();
+        setImage(null);
         onClose();
-    }
+    };
+
     return (
         <Modal backdrop="static" show={isOpen} onHide={handleClose} keyboard={false}>
             <Modal.Header>
@@ -69,6 +100,10 @@ const ProductForm = ({isOpen , data , onClose, token}) => {
                         )}
                     </Form.Group>
                     <Form.Group className="mb-3">
+                        <Form.Label htmlFor="imagen">Imagen</Form.Label>
+                        <Form.Control type="file" name="imagen" onChange={handleImageChange} />
+                    </Form.Group>
+                    <Form.Group className="mb-3">
                         <Row>
                             <Col className="text-end">
                                 <Button
@@ -88,6 +123,6 @@ const ProductForm = ({isOpen , data , onClose, token}) => {
             </Modal.Body>
         </Modal>
     );
-}
+};
 
 export default ProductForm;

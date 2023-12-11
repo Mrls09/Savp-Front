@@ -1,0 +1,32 @@
+.profile-container {
+    background-color: #030713;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .cover-photo {
+    height: 10%;
+    width: 100%;
+    /* Agrega aquí el fondo de la imagen de portada */
+  }
+  
+  .user-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px; /* Ajusta el margen superior según tu preferencia */
+  }
+  
+  .profile-picture img {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    margin-bottom: 10px; /* Puedes ajustar el margen inferior según tu preferencia */
+  }
+  
+  .user-games {
+    margin-top: 20px; /* Ajusta el margen superior según tu preferencia */
+  }
+  

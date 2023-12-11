@@ -10,6 +10,7 @@ import { AuthContext } from "../../modules/auth/authContext";
 import { useContext, useEffect } from "react";
 import ProductScreen from "../../modules/product/ProductScreen";
 import ItemScreen from "../../modules/item/ItemScreen";
+import ProfileUser from "../../modules/profile/ProfileUser";
 
 export const AppRouter = () => {
   return (
@@ -67,6 +68,7 @@ const PrivateRoutes = () => {
         <Routes>
           <Route path="/" element={<AppLayout option={3} />}>
             <Route index element={<UserHome />} />
+            <Route path="/perfil" element={<ProfileUser/>} />
             <Route path="*" element={<>USER</>} />
           </Route>
         </Routes>

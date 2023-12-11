@@ -40,6 +40,7 @@ export const LoginScreen = () => {
     initialValues: {
       username: "",
       password: "",
+      password2:""
     },
     validationSchema: yup.object().shape({
       username: yup.string().required("Campo obligatorio"),
@@ -48,8 +49,6 @@ export const LoginScreen = () => {
     }),
     onSubmit: async (values) => {
       setExpanded(!expanded);
-      console.log("Valores: ");
-      console.log(values);
       try {
         const response = await AxiosClient({
           url: "/auth/",
