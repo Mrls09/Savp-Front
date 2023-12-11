@@ -39,7 +39,7 @@ const PrivateRoutes = () => {
         <Routes>
           <Route path="/" element={<AppLayout option={1} />}>
             <Route element={<Users option={true} />} />
-            <Route path="/platform" element={<PlatformScreen />} />
+            <Route path="/plataforma" element={<PlatformScreen />} />
             <Route path="/producto" element={<ProductScreen />} />
             <Route path="/item" element={<ItemScreen />} />
             <Route index element={<PlatformScreen />} />

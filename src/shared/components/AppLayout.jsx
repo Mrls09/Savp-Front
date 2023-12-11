@@ -1,5 +1,6 @@
 import { Outlet } from "react-router-dom";
 import UserNavbar from "./UserNavbar";
+import NavbarAdmin from "./NavbarAdmin";
 
 const AppLayout = ({ option }) => {
     return <div style={{
@@ -10,7 +11,7 @@ const AppLayout = ({ option }) => {
         {
             option == 1 ? (
                 <>
-                <UserNavbar />
+                <NavbarAdmin/>
                 <Outlet/>
                 </>
             ) : (
