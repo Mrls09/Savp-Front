@@ -17,6 +17,7 @@
     flex-direction: column;
     align-items: center;
     margin-top: 20px; /* Ajusta el margen superior según tu preferencia */
+    color: white
   }
   
   .profile-picture img {
@@ -28,5 +29,14 @@
   
   .user-games {
     margin-top: 20px; /* Ajusta el margen superior según tu preferencia */
+    color:white
   }
+  .UserCarrusel {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+    overflow-x: scroll;
+    margin-left: 1rem;
+    padding-top: 0.5rem;
+}
   

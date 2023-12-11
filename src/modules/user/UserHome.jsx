@@ -10,7 +10,8 @@ const UserHome = () => {
     const [products, setProducts] = useState([]);
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [showModal, setShowModal] = useState(false);
-
+    const [items, setItems] = useState([]);
+    const [selectedItem , setSelectedItem ] = useState();
     useEffect(() => {
         cargarDatos();
     }, []);
@@ -32,20 +33,67 @@ const UserHome = () => {
             });
         }
     }
-
+    const getItemsByProduct = async (productoId) => {
+        try {
+            const response = await AxiosClient({
+                url: `/item/producto/${productoId}`,
+                method: "GET"
+            })
+            setItems(response);
+        } catch (error) {
+            console.log(error)
+        }
+    }
     const openModal = (product) => {
         setSelectedProduct(product);
         setShowModal(true);
+        getItemsByProduct(product.id)
     }
 
     const closeModal = () => {
+        setSelectedItem({});
+        setSelectedProduct({})
         setShowModal(false);
     }
 
-    const addToCart = () => {
+    const addToCart =  async() => {
         // Lógica para agregar al carrito (puedes implementar según tus necesidades)
         console.log(`Agregando al carrito: ${selectedProduct?.titulo}`);
-        // Puedes enviar esta información al servidor para procesar la acción de agregar al carrito
+        try {
+            const response = await AxiosClient({
+                url:"/renta/",
+                method:"POST",
+                data:{
+                    userId: user.user.data.id,
+                    itemId: selectedItem,
+                    cajeroId: 2
+                }
+            })
+            if(!response.error){
+                const res = await AxiosClient({
+                    url:`/item/status/${selectedItem}`,
+                    method: "PUT"
+                })
+                console.log(res);
+                Alert.fire({
+                  title: "ITEM AÑADIDO EXITOSAMENTE",
+                  text: "El item fue añadido con exito a tus productos",
+                  icon: "check",
+                  confirmButtonColor: "#3085d6",
+                  confirmButtonText: "Aceptar",
+              });
+            };
+        } catch (error) {
+            Alert.fire({
+                title: "ERROR AL AÑADIRO ITEM",
+                text: "Hubo un error al añadir item, intente otra vez",
+                icon: "x",
+                confirmButtonColor: "#3085d6",
+                confirmButtonText: "Aceptar",
+            });
+        }finally{
+            closeModal();
+        }
     }
 
     return (
@@ -82,7 +130,7 @@ const UserHome = () => {
             <div className='UserJuegos'>
                 <div>Recien añadidos</div>
                 <div className="UserCarrusel">
-                {products.slice(2, 7).map((product, index) => (
+                    {products.slice(2, 7).map((product, index) => (
                         <div key={index} className="item" onClick={() => openModal(product)}>
                             <img
                                 src={`http://localhost:8080/uploads/${product.imagen}`}
@@ -105,7 +153,22 @@ const UserHome = () => {
                         alt={`Imagen de ${selectedProduct?.titulo}`}
                         style={{ width: '450px', height: '300px' }}
                     />
-                    <p>{selectedProduct?.descripcion}</p>
+                    <p> <strong>Descripcion : </strong>{selectedProduct?.descripcion}</p>
+                    {/* Select para plataformas */}
+                    <label htmlFor="platform">Seleccionar plataforma:</label>
+                    <select
+                        id="platform"
+                        name="platform"
+                        value={selectedItem}
+                        onChange={(e) => setSelectedItem(e.target.value)}
+                    >
+                        <option value="">-- Seleccionar --</option>
+                        {items.map((item) => (
+                            <option key={item.id} value={item.id}>
+                                {item.plataforma}
+                            </option>
+                        ))}
+                    </select>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={closeModal}>

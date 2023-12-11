@@ -6,6 +6,7 @@ import * as yup from "yup";
 import AxiosClient from "../../shared/plugins/axios";
 import {Form, Button } from "react-bootstrap";
 import '../../utils/styles/login.css'
+import Alert from "../../shared/plugins/alerts";
 
 export const LoginScreen = () => {
   const [expanded, setExpanded] = useState(false);
@@ -49,24 +50,53 @@ export const LoginScreen = () => {
     }),
     onSubmit: async (values) => {
       setExpanded(!expanded);
-      try {
-        const response = await AxiosClient({
-          url: "/auth/",
-          method: "POST",
-          data: JSON.stringify(values),
-        });
-        if (!response.error) {
-          const action = {
-            type: "LOGIN",
-            payload: { data: response },
-          };
-          dispatch(action);
-          handleLogin(true);
+      if(isLogin === true){
+        try {
+          const response = await AxiosClient({
+            url: "/auth/",
+            method: "POST",
+            data: JSON.stringify(values),
+          });
+          if (!response.error) {
+            const action = {
+              type: "LOGIN",
+              payload: { data: response },
+            };
+            dispatch(action);
+            handleLogin(true);
+          }
+        } catch (err) {
+          console.log(err);
+          handleLogin(false);
         }
-      } catch (err) {
-        console.log(err);
-        handleLogin(false);
+      }else if(isLogin === false){
+        try {
+          const response = await AxiosClient({
+            url: "/user/",
+            method: "POST",
+            data: {
+              username: values.username,
+              password: values.password,
+              status: true,
+              roleId: 3
+            },
+          });
+          if(!response.error){
+            Alert.fire({
+              title: "REGISTRO EXITOSO",
+              text: "",
+              icon: "check",
+              confirmButtonColor: "#3085d6",
+              confirmButtonText: "Aceptar",
+          });
+          }
+          setIsLogin(true);
+        } catch (err) {
+          console.log(err);
+          handleLogin(false);
+        }
       }
+      
     },
   });
   useEffect(() => {
@@ -155,20 +185,20 @@ export const LoginScreen = () => {
               <div className="formBien">Registro</div>
               <Form className="loginSelect" onSubmit={formik.handleSubmit}>
                 <Form.Group className="form-outline mb-1">
-                  <Form.Label htmlFor="email">
+                  <Form.Label htmlFor="username">
                     Usuario
                   </Form.Label>
                   <Form.Control
-                    placeholder="correo@dominio.com"
-                    id="email"
+                    placeholder="username"
+                    id="username"
                     autoComplete="off"
-                    name="email"
-                    value={formik.values.email}
+                    name="username"
+                    value={formik.values.username}
                     onChange={formik.handleChange}
                   />
-                  {formik.errors.email ? (
+                  {formik.errors.username ? (
                     <span className="error-text">
-                      {formik.errors.email}
+                      {formik.errors.username}
                     </span>
                   ) : null}
                 </Form.Group>
