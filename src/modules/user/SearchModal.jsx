@@ -9,7 +9,7 @@ const SearchModal = ({ isOpen, onClose, products, onProductSelect }) => {
   );
 
   return (
-    <Modal show={isOpen} onHide={onClose} size='lg'>
+    <Modal show={isOpen} onHide={onClose} size='xl'>
       <Modal.Header closeButton>
         <Modal.Title>Buscar Productos</Modal.Title>
       </Modal.Header>
@@ -21,9 +21,6 @@ const SearchModal = ({ isOpen, onClose, products, onProductSelect }) => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <Button variant="secondary" onClick={onClose}>
-            Cerrar
-          </Button>
         </div>
         <Row className="card-container">
           {filteredProducts.length > 0 ? (

@@ -7,6 +7,9 @@ import { Button } from "react-bootstrap";
 import ProductForm from "./components/ProductForm";
 import ProductEditForm from "./components/ProductEditForm"; // Importa ProductEditForm
 import Swal from 'sweetalert2';
+import { useTheme } from "../../shared/components/ThemeContext";
+import '../../utils/styles/AdminStyle.css'
+
 
 const ProductScreen = () => {
   const user = useContext(AuthContext);
@@ -15,6 +18,8 @@ const ProductScreen = () => {
   const [showModalForm, setShowModalForm] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editProductData, setEditProductData] = useState(null);
+  const { darkMode } = useTheme();
+
 
   const getAllProducts = async () => {
     try {
@@ -103,7 +108,7 @@ const ProductScreen = () => {
               variant="warning"
               type="btn btn-outline-warning btn-circle me-1"
               size={16}
-              onClick={() => handleEdit(row)} 
+              onClick={() => handleEdit(row)}
             >
               <FeatherIcon icon={"edit"} />
             </Button>
@@ -124,13 +129,13 @@ const ProductScreen = () => {
   return (
     <>
       <div
+        className={`CrudContainer ${darkMode ? 'dark-mode' : 'light-mode'}`}
         style={{
-          justifyContent: "ceneter",
+          justifyContent: "center",
           alignItems: "center",
-          backgroundColor: "transparent",
           height: "92vh",
           padding: 20,
-          overflowY:"auto"
+          overflowY: "auto"
         }}
       >
         <div>

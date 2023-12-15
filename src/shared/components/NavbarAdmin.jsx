@@ -8,10 +8,14 @@ import { Button } from 'react-bootstrap'
 import { useContext } from 'react'
 import { AuthContext } from '../../modules/auth/authContext'
 import { useNavigate } from 'react-router-dom'
+import { useTheme } from '../../shared/components/ThemeContext';
+
 
 const NavbarAdmin = () => {
     const { dispatch } = useContext(AuthContext);
     const navigation = useNavigate();
+    const { darkMode, toggleDarkMode } = useTheme();
+
     const handleLogout = () => {
         dispatch({ type: "LOGOUT" });
         navigation("/auth", { replace: true });
@@ -25,13 +29,15 @@ const NavbarAdmin = () => {
                 ADMIN
             </div>
             <div className='UserData'>
+                <IoIosSettings className='DataIcon' onClick={toggleDarkMode} style={{ height: 50, width: 32, marginBottom: 0 }}> {darkMode ? 'Modo Claro' : 'Modo Oscuro'}</IoIosSettings>
+
                 <Button variant='none' href='/producto'>Productos</Button>
                 <Button variant='none' href='/plataforma'>Plataforma</Button>
                 <Button variant='none' href='/item'>Item</Button>
                 <Button variant='none' href='/usuarios'>Usuarios</Button>
                 <Button variant='none' href='/perfil'>Perfil</Button>
                 <Button variant='none' onClick={handleLogout}><FeatherIcon icon={'log-out'} /></Button>
-                
+
             </div>
         </div>
     );

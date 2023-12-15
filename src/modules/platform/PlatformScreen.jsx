@@ -7,7 +7,8 @@ import PlatformForm from "./components/PlatformForm";
 import PlatformEditForm from "./components/PlatformEditForm";
 import FeatherIcon from "feather-icons-react/build/FeatherIcon";
 import Swal from 'sweetalert2';
-
+import '../../utils/styles/AdminStyle.css'
+import { useTheme } from "../../shared/components/ThemeContext";
 const PlatformScreen = () => {
   const user = useContext(AuthContext);
   const { token } = user;
@@ -15,8 +16,11 @@ const PlatformScreen = () => {
   const [showModalPlatform, setShowModalPlatform] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [selectedPlatform, setSelectedPlatform] = useState(null);
+  const { darkMode } = useTheme();
+
 
   const getAllPlatform = async () => {
+    
     try {
       const response = await AxiosClient({
         url: "/plataforma/",
@@ -118,12 +122,13 @@ const PlatformScreen = () => {
   return (
     <>
       <div
+        className={`CrudContainer ${darkMode ? 'dark-mode': 'light-mode'}`}
         style={{
-          justifyContent: "ceneter",
+          justifyContent: "center",
           alignItems: "center",
-          backgroundColor: "transparent",
           height: "92vh",
           padding: 20,
+          overflowY:"auto"
         }}
       >
         <div>

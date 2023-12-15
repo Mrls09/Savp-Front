@@ -77,7 +77,6 @@ const PrivateRoutes = () => {
             <Route path="*" element={<>USER</>} />
           </Route>
         </Routes>
-
       </>
 
     )

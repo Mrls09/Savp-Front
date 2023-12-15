@@ -5,6 +5,9 @@ import AxiosClient from "../../shared/plugins/axios";
 import Alert from "../../shared/plugins/alerts";
 import { AuthContext } from '../auth/authContext';
 import { URL } from '../../utils/constans';
+import { useTheme } from '../../shared/components/ThemeContext';
+import { useFontSize } from '../../shared/components/FontSizeContext';
+
 
 const UserHome = () => {
     const user = useContext(AuthContext);
@@ -12,18 +15,24 @@ const UserHome = () => {
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [items, setItems] = useState([]);
-    const [selectedItem , setSelectedItem ] = useState();
+    const [selectedItem, setSelectedItem] = useState();
+    const { darkMode } = useTheme();
+    const { fontSize, changeFontSize } = useFontSize();
+
+
+
+
     useEffect(() => {
         cargarDatos();
     }, []);
     const randomizarPosiciones = (lista) => {
         const listaRandomizada = [...lista];
         for (let i = listaRandomizada.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [listaRandomizada[i], listaRandomizada[j]] = [listaRandomizada[j], listaRandomizada[i]];
+            const j = Math.floor(Math.random() * (i + 1));
+            [listaRandomizada[i], listaRandomizada[j]] = [listaRandomizada[j], listaRandomizada[i]];
         }
         return listaRandomizada;
-      };
+    };
     const cargarDatos = async () => {
         try {
             const response = await AxiosClient({
@@ -64,32 +73,31 @@ const UserHome = () => {
         setShowModal(false);
     }
 
-    const addToCart =  async() => {
-        // Lógica para agregar al carrito (puedes implementar según tus necesidades)
+    const addToCart = async () => {
         console.log(`Agregando al carrito: ${selectedProduct?.titulo}`);
         try {
             const response = await AxiosClient({
-                url:"/renta/",
-                method:"POST",
-                data:{
+                url: "/renta/",
+                method: "POST",
+                data: {
                     userId: user.user.data.id,
                     itemId: selectedItem,
                     cajeroId: 2
                 }
             })
-            if(!response.error){
+            if (!response.error) {
                 const res = await AxiosClient({
-                    url:`/item/status/${selectedItem}`,
+                    url: `/item/status/${selectedItem}`,
                     method: "PUT"
                 })
                 console.log(res);
                 Alert.fire({
-                  title: "ITEM AÑADIDO EXITOSAMENTE",
-                  text: "El item fue añadido con exito a tus productos",
-                  icon: "check",
-                  confirmButtonColor: "#3085d6",
-                  confirmButtonText: "Aceptar",
-              });
+                    title: "ITEM AÑADIDO EXITOSAMENTE",
+                    text: "El item fue añadido con exito a tus productos",
+                    icon: "check",
+                    confirmButtonColor: "#3085d6",
+                    confirmButtonText: "Aceptar",
+                });
             };
         } catch (error) {
             Alert.fire({
@@ -99,16 +107,17 @@ const UserHome = () => {
                 confirmButtonColor: "#3085d6",
                 confirmButtonText: "Aceptar",
             });
-        }finally{
+        } finally {
             closeModal();
         }
     }
 
     return (
-        <div className='UserMainContainer'>
-            {/* Sección para mostrar imágenes de productos */}
+        <div className={`UserMainContainer ${darkMode ? 'dark-mode' : 'light-mode'}`}>
             <div className='UserJuegos'>
-                <div>Top juegos</div>
+                <div style={{
+                    color: darkMode ? 'white' : 'black', fontSize/* Cambiar color basado en el estado */
+                }}>Top juegos</div>
                 <div className="UserCarrusel">
                     {products.slice(12, 17).map((product, index) => (
                         <div key={index} className="item" onClick={() => openModal(product)}>
@@ -122,7 +131,9 @@ const UserHome = () => {
                 </div>
             </div>
             <div className='UserJuegos'>
-                <div>Recomendados</div>
+                <div style={{
+                    color: darkMode ? 'white' : 'black',fontSize 
+                }}>Recomendados</div>
                 <div className="UserCarrusel">
                     {products.slice(7, 12).map((product, index) => (
                         <div key={index} className="item" onClick={() => openModal(product)}>
@@ -136,7 +147,9 @@ const UserHome = () => {
                 </div>
             </div>
             <div className='UserJuegos'>
-                <div>Recien añadidos</div>
+                <div style={{
+                    color: darkMode ? 'white' : 'black', fontSize/* Cambiar color basado en el estado */
+                }}>Recien añadidos</div>
                 <div className="UserCarrusel">
                     {products.slice(2, 7).map((product, index) => (
                         <div key={index} className="item" onClick={() => openModal(product)}>

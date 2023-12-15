@@ -1,10 +1,33 @@
+/* ProfileStyle.css */
+
 .profile-container {
   background-color: #030713;
+  color: white; /* Color de texto en modo oscuro */
   height: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
+
+.profile-container.dark-mode {
+  background-color: #030713;
+  color: white; /* Color de texto en modo oscuro */
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profile-container.light-mode {
+  background-color: white;
+  color: black; /* Color de texto en modo claro */
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+
 
 .cover-photo {
   height: auto;

@@ -7,6 +7,7 @@ import FeatherIcon from 'feather-icons-react/build/FeatherIcon';
 import DataTable from 'react-data-table-component';
 import UsersForm from './components/UsersForm';
 import EditUserForm from './components/EditUserForm';
+import { useTheme } from "../../shared/components/ThemeContext";
 
 const UsersScreen = () => {
     const { user } = useContext(AuthContext);
@@ -15,6 +16,7 @@ const UsersScreen = () => {
     const [showModal, setShowModal] = useState(false);
     const [showModalEdit, setShowModalEdit] = useState(false);
     const [selectedPerson, setSelectedPerson] = useState({});
+    const { darkMode } = useTheme();
 
     const getAllUsers = async () => {
         try {
@@ -134,10 +136,10 @@ const UsersScreen = () => {
     return (
         <>
             <div
+                className={`CrudContainer ${darkMode ? 'dark-mode' : 'light-mode'}`}
                 style={{
                     justifyContent: "ceneter",
                     alignItems: "center",
-                    backgroundColor: "transparent",
                     height: "92vh",
                     padding: 20,
                 }}
@@ -177,12 +179,12 @@ const UsersScreen = () => {
                     onClose={() => setShowModal(false)}
                     data={getAllUsers}
                     token={token} />
-                <EditUserForm 
-                isOpen={showModalEdit}
-                onClose={()=> setShowModalEdit(false)}
-                data={getAllUsers}
-                person={selectedPerson}
-                token={token}/>
+                <EditUserForm
+                    isOpen={showModalEdit}
+                    onClose={() => setShowModalEdit(false)}
+                    data={getAllUsers}
+                    person={selectedPerson}
+                    token={token} />
             </div>
         </>
     );

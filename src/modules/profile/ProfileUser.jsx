@@ -6,6 +6,9 @@ import { Button } from "react-bootstrap";
 import FeatherIcon from "feather-icons-react/build/FeatherIcon";
 import EditInfUser from "./EditInfUser"; // Ajusta la ruta según la ubicación real de tu componente
 import { URL } from '../../utils/constans'
+import { useTheme } from '../../shared/components/ThemeContext';
+import { useFontSize } from '../../shared/components/FontSizeContext';
+
 const ProfileUser = () => {
   const user = useContext(AuthContext);
   const [products, setProducts] = useState([]);
@@ -13,6 +16,10 @@ const ProfileUser = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [editProfile, setEditProfile] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const { darkMode } = useTheme();
+  const { fontSize } = useFontSize();
+
+
 
   const getMyProducts = async () => {
     try {
@@ -55,7 +62,7 @@ const ProfileUser = () => {
   };
 
   return (
-    <div className="profile-container">
+    <div className={`profile-container ${darkMode ? 'dark-mode' : 'light-mode'}`}>
       <div className="cover-photo">
         <img src={require("../../utils/img/coverPhoto.jpg")} alt="Cover" />
       </div>
@@ -65,7 +72,13 @@ const ProfileUser = () => {
           <img src={require("../../utils/img/fgIcon.png")} alt="Profile" />
         </div>
         <div style={{ display: "flex" }}>
-          <h2 className="username">{user.user.data.username}</h2>
+          <h2 style={{
+            color: darkMode ? 'white' : 'black', fontSize,/* Cambiar color basado en el estado */
+            padding: '5px'
+          }}>
+            {user.user.data.username}
+          </h2>
+
 
           <Button
             variant="warning"
@@ -87,7 +100,10 @@ const ProfileUser = () => {
         </div>
       </div>
 
-      <div className="user-games">
+      <div className="user-games" style={{
+       color: darkMode ? 'white' : 'black',fontSize, /* Cambiar color basado en el estado */
+       padding: '5px'
+      }}>
         <h3>Mis Juegos</h3>
         <div className="UserCarrusel">
           {products.map((product, index) => (

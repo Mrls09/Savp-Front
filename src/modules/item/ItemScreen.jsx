@@ -6,6 +6,7 @@ import FeatherIcon from "feather-icons-react/build/FeatherIcon";
 import DataTable from "react-data-table-component";
 import ItemForm from "./components/ItemForm";
 import ItemEditForm from "./components/ItemEditForm";
+import { useTheme } from "../../shared/components/ThemeContext";
 
 const ItemScreen = () => {
     const user = useContext(AuthContext);
@@ -14,6 +15,7 @@ const ItemScreen = () => {
     const [showModalForm, setShowModalForm] = useState(false);
     const [showModalEditForm, setShowModalEditForm] = useState(false);
     const [selectedFamily, setSelectedFamily] = useState(null);
+    const { darkMode } = useTheme();
 
     const getAllItems = async () => {
         try {
@@ -131,10 +133,10 @@ const ItemScreen = () => {
     return (
         <>
             <div
+                className={`CrudContainer ${darkMode ? 'dark-mode' : 'light-mode'}`}
                 style={{
                     justifyContent: "ceneter",
                     alignItems: "center",
-                    backgroundColor: "transparent",
                     height: "92vh",
                     padding: 20,
                 }}
