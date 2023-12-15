@@ -4,6 +4,7 @@ import '../../utils/styles/UserStyles.css';
 import AxiosClient from "../../shared/plugins/axios";
 import Alert from "../../shared/plugins/alerts";
 import { AuthContext } from '../auth/authContext';
+import { URL } from '../../utils/constans';
 
 const UserHome = () => {
     const user = useContext(AuthContext);
@@ -15,14 +16,21 @@ const UserHome = () => {
     useEffect(() => {
         cargarDatos();
     }, []);
-
+    const randomizarPosiciones = (lista) => {
+        const listaRandomizada = [...lista];
+        for (let i = listaRandomizada.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [listaRandomizada[i], listaRandomizada[j]] = [listaRandomizada[j], listaRandomizada[i]];
+        }
+        return listaRandomizada;
+      };
     const cargarDatos = async () => {
         try {
             const response = await AxiosClient({
                 url: "/producto/",
                 method: "GET",
             });
-            setProducts(response);
+            setProducts(randomizarPosiciones(response));
         } catch (err) {
             Alert.fire({
                 title: "VERIFICAR DATOS",
@@ -102,10 +110,10 @@ const UserHome = () => {
             <div className='UserJuegos'>
                 <div>Top juegos</div>
                 <div className="UserCarrusel">
-                    {products.slice(2, 7).map((product, index) => (
+                    {products.slice(12, 17).map((product, index) => (
                         <div key={index} className="item" onClick={() => openModal(product)}>
                             <img
-                                src={`http://localhost:8080/uploads/${product.imagen}`}
+                                src={`${URL}:8080/uploads/${product.imagen}`}
                                 alt={`Imagen de ${product.titulo}`}
                                 style={{ width: '250px', height: '150px' }}
                             />
@@ -116,10 +124,10 @@ const UserHome = () => {
             <div className='UserJuegos'>
                 <div>Recomendados</div>
                 <div className="UserCarrusel">
-                    {products.slice(2, 7).map((product, index) => (
+                    {products.slice(7, 12).map((product, index) => (
                         <div key={index} className="item" onClick={() => openModal(product)}>
                             <img
-                                src={`http://localhost:8080/uploads/${product.imagen}`}
+                                src={`${URL}:8080/uploads/${product.imagen}`}
                                 alt={`Imagen de ${product.titulo}`}
                                 style={{ width: '250px', height: '150px' }}
                             />
@@ -133,7 +141,7 @@ const UserHome = () => {
                     {products.slice(2, 7).map((product, index) => (
                         <div key={index} className="item" onClick={() => openModal(product)}>
                             <img
-                                src={`http://localhost:8080/uploads/${product.imagen}`}
+                                src={`${URL}:8080/uploads/${product.imagen}`}
                                 alt={`Imagen de ${product.titulo}`}
                                 style={{ width: '250px', height: '150px' }}
                             />
@@ -149,7 +157,7 @@ const UserHome = () => {
                 </Modal.Header>
                 <Modal.Body>
                     <img
-                        src={`http://localhost:8080/uploads/${selectedProduct?.imagen}`}
+                        src={`${URL}:8080/uploads/${selectedProduct?.imagen}`}
                         alt={`Imagen de ${selectedProduct?.titulo}`}
                         style={{ width: '450px', height: '300px' }}
                     />
@@ -175,7 +183,7 @@ const UserHome = () => {
                         Cerrar
                     </Button>
                     <Button variant="primary" onClick={addToCart}>
-                        Agregar al carrito
+                        Solicitar
                     </Button>
                 </Modal.Footer>
             </Modal>

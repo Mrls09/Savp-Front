@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import * as yup from "yup";
 import AxiosClient from '../../../shared/plugins/axios';
 import { Button, Col, Form, Modal, Row } from 'react-bootstrap';
+import Alert from '../../../shared/plugins/alerts';
 
 const ItemForm = ({ isOpen, data, onClose, token }) => {
     const [platforms, setPlatforms] = useState([]);
@@ -12,10 +13,9 @@ const ItemForm = ({ isOpen, data, onClose, token }) => {
         initialValues: {
             estado: 1,
             descripcion: "",
-            productoId: 0,
-            plataformaId: 0,
+            productoId: '',
+            plataformaId: '',
             status: true,
-            stock: 0 // Added stock field with default value 0
         },
         validationSchema: yup.object().shape({
             descripcion: yup.string().required("Campo obligatorio"),
@@ -36,6 +36,16 @@ const ItemForm = ({ isOpen, data, onClose, token }) => {
                 }
             } catch (error) {
                 console.log(error);
+                Alert.fire({
+                    text: "No se pudo registar",
+                    title:"Algo fallo",
+                    icon:"x",
+                    confirmButtonText: "Aceptar",
+                    confirmButtonColor: "#3085d6"
+                })
+                handleClose();
+            }finally{
+                data();
             }
         }
     })
@@ -136,19 +146,7 @@ const ItemForm = ({ isOpen, data, onClose, token }) => {
                             <span className="error-text">{form.errors.descripcion}</span>
                         )}
                     </Form.Group>
-                    <Form.Group className="mb-3">
-                        <Form.Label htmlFor="stock">Stock</Form.Label>
-                        <Form.Control
-                            name="stock"
-                            placeholder=""
-                            value={form.values.stock}
-                            onChange={form.handleChange}
-                            type="number"
-                        />
-                        {form.errors.stock && (
-                            <span className="error-text">{form.errors.stock}</span>
-                        )}
-                    </Form.Group>
+                    
                     <Form.Group className="mb-3">
                         <Row>
                             <Col className="text-end">

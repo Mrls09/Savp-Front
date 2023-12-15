@@ -130,6 +130,7 @@ const ProductScreen = () => {
           backgroundColor: "transparent",
           height: "92vh",
           padding: 20,
+          overflowY:"auto"
         }}
       >
         <div>

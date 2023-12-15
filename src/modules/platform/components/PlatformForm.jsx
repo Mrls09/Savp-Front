@@ -21,12 +21,26 @@ const PlatformForm = ({ isOpen, data, onClose, token }) => {
                     data: JSON.stringify(values),
                     headers: { Authorization: `Bearer ${token}` }
                 })
-                if(!response.error){
-                    data();
-                    handleClose();
-                }
+                Alert.fire({
+                    title: "REGISTRO EXITOSO",
+                    text: "",
+                    icon: "check",
+                    confirmButtonColor: "#3085d6",
+                    confirmButtonText: "Aceptar",
+                });
+
             } catch (error) {
                 console.log(error);
+                Alert.fire({
+                    title: "REGISTRO FALLIDO",
+                    text: "",
+                    icon: "x",
+                    confirmButtonColor: "#3085d6",
+                    confirmButtonText: "Aceptar",
+                });
+            } finally {
+                data();
+                handleClose();
             }
         }
     })

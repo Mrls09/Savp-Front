@@ -1,18 +1,21 @@
 import { useFormik } from "formik";
 import React, { useContext, useEffect, useState } from "react";
-import {useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { AuthContext } from "./authContext";
 import * as yup from "yup";
 import AxiosClient from "../../shared/plugins/axios";
-import {Form, Button } from "react-bootstrap";
+import { Form, Button } from "react-bootstrap";
 import '../../utils/styles/login.css'
 import Alert from "../../shared/plugins/alerts";
+import RecoverPassword from "./RecoverPassword";
 
 export const LoginScreen = () => {
   const [expanded, setExpanded] = useState(false);
   const [success, setSuccess] = useState(false);
   const [failure, setFailure] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
+
+  const [showRecover, setShowRecover] = useState(false);
 
   const handleLogin = (credencialesValidas) => {
     // Realizar verificación de las credenciales aquí
@@ -41,7 +44,7 @@ export const LoginScreen = () => {
     initialValues: {
       username: "",
       password: "",
-      password2:""
+      password2: ""
     },
     validationSchema: yup.object().shape({
       username: yup.string().required("Campo obligatorio"),
@@ -50,7 +53,7 @@ export const LoginScreen = () => {
     }),
     onSubmit: async (values) => {
       setExpanded(!expanded);
-      if(isLogin === true){
+      if (isLogin === true) {
         try {
           const response = await AxiosClient({
             url: "/auth/",
@@ -69,7 +72,7 @@ export const LoginScreen = () => {
           console.log(err);
           handleLogin(false);
         }
-      }else if(isLogin === false){
+      } else if (isLogin === false) {
         try {
           const response = await AxiosClient({
             url: "/user/",
@@ -81,22 +84,23 @@ export const LoginScreen = () => {
               roleId: 3
             },
           });
-          if(!response.error){
+          if (!response.error) {
             Alert.fire({
               title: "REGISTRO EXITOSO",
               text: "",
               icon: "check",
               confirmButtonColor: "#3085d6",
               confirmButtonText: "Aceptar",
-          });
+            });
           }
-          setIsLogin(true);
         } catch (err) {
           console.log(err);
           handleLogin(false);
+        } finally {
+          setIsLogin(true);
         }
       }
-      
+
     },
   });
   useEffect(() => {
@@ -120,7 +124,7 @@ export const LoginScreen = () => {
                     Usuario
                   </Form.Label>
                   <Form.Control
-                    placeholder="usuario"
+                    placeholder="email@example.com"
                     id="username"
                     autoComplete="off"
                     name="username"
@@ -155,7 +159,7 @@ export const LoginScreen = () => {
                 <Form.Group className='form-outline mb-1'>
                   <div className="text-center pt-1 pb-1 formBoton">
                     <Button
-                      onClick={()=>setExpanded(!expanded)}
+                      onClick={() => setExpanded(!expanded)}
                       className='btn-hover gradient-custom-2 formBoton'
                       type="submit"
                       disable={!(formik.isValid && formik.dirty)}
@@ -166,14 +170,14 @@ export const LoginScreen = () => {
                 </Form.Group>
                 <Form.Group className="form-outline">
                   <div className="text-center pt-1 pb-1">
-                    <p href="#!" className="text-muted formCuenta">
+                    <p href="#!" className="text-muted formCuenta" onClick={() => setShowRecover(true)}>
                       ¿Olvidaste tu contraseña?
                     </p>
                   </div>
                 </Form.Group>
                 <Form.Group className="form-outline mb-4">
                   <div className="text-center pt-1 pb-1">
-                    <p href="#!" className="text-muted formCuenta" onClick={()=>setIsLogin(!isLogin)} >
+                    <p href="#!" className="text-muted formCuenta" onClick={() => setIsLogin(!isLogin)} >
                       ¿No tienes cuenta?
                     </p>
                   </div>
@@ -185,11 +189,10 @@ export const LoginScreen = () => {
               <div className="formBien">Registro</div>
               <Form className="loginSelect" onSubmit={formik.handleSubmit}>
                 <Form.Group className="form-outline mb-1">
-                  <Form.Label htmlFor="username">
-                    Usuario
-                  </Form.Label>
+                  <Form.Label htmlFor="username">Usuario</Form.Label>
                   <Form.Control
-                    placeholder="username"
+                    type="email"
+                    placeholder="email@example.com"
                     id="username"
                     autoComplete="off"
                     name="username"
@@ -197,11 +200,10 @@ export const LoginScreen = () => {
                     onChange={formik.handleChange}
                   />
                   {formik.errors.username ? (
-                    <span className="error-text">
-                      {formik.errors.username}
-                    </span>
+                    <span className="error-text">{formik.errors.username}</span>
                   ) : null}
                 </Form.Group>
+
                 <Form.Group className="form-outline mb-1">
                   <Form.Label htmlFor="password">
                     Contraseña
@@ -243,7 +245,7 @@ export const LoginScreen = () => {
                 <Form.Group className='form-outline mb-1'>
                   <div className="text-center pt-1 pb-1 formBoton">
                     <Button
-                      onClick={()=>setExpanded(!expanded)}
+                      onClick={() => setExpanded(!expanded)}
                       className='btn-hover gradient-custom-2 formBoton'
                       type="submit"
                       disable={!(formik.isValid && formik.dirty)}
@@ -261,7 +263,7 @@ export const LoginScreen = () => {
                 </Form.Group>
                 <Form.Group className="form-outline mb-4">
                   <div className="text-center pt-1 pb-1">
-                    <p href="#!" className="text-muted formCuenta" onClick={()=>setIsLogin(!isLogin)}>
+                    <p href="#!" className="text-muted formCuenta" onClick={() => setIsLogin(!isLogin)}>
                       ¿Ya tienes cuenta?
                     </p>
                   </div>
@@ -305,6 +307,9 @@ export const LoginScreen = () => {
           <div className="loginTextSmall" style={expanded ? { display: "none" } : {}}>Sistema de Cálculo y Generación de Reportes</div>
         </div>
       </div>
+      <RecoverPassword
+        isOpen={showRecover}
+        onClose={() => setShowRecover(false)} />
     </div>
   );
 };

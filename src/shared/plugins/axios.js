@@ -1,6 +1,7 @@
 import instance from 'axios';
+import {URL} from '../../utils/constans'
 const AxiosClient = instance.create({
-    baseURL: 'http://localhost:8080/api',
+    baseURL: `${URL}:8080/api`,
 });
 
 const requestHandler = (request) => {

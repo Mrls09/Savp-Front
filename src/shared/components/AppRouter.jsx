@@ -11,6 +11,8 @@ import { useContext, useEffect } from "react";
 import ProductScreen from "../../modules/product/ProductScreen";
 import ItemScreen from "../../modules/item/ItemScreen";
 import ProfileUser from "../../modules/profile/ProfileUser";
+import CashierDashboard from "../../modules/cashier/CashierDashboard";
+import UsersScreen from "../../modules/users/UsersScreen";
 
 export const AppRouter = () => {
   return (
@@ -44,6 +46,7 @@ const PrivateRoutes = () => {
             <Route path="/producto" element={<ProductScreen />} />
             <Route path="/item" element={<ItemScreen />} />
             <Route path="/perfil" element={<ProfileUser/>} />
+            <Route path="/usuarios" element={<UsersScreen/>}/>
             <Route index element={<PlatformScreen />} />
           </Route>
         </Routes>
@@ -56,6 +59,7 @@ const PrivateRoutes = () => {
         <Routes>
           <Route path="/" element={<AppLayout option={2} />}>
             <Route element={<Users option={false} />} />
+            <Route index element={<CashierDashboard/>}/>
             <Route path="*" element={<>SUPER</>} />
           </Route>
         </Routes>

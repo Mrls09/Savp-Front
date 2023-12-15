@@ -4,6 +4,7 @@ import * as yup from "yup";
 import AxiosClient from '../../../shared/plugins/axios';
 import { Button, Col, Form, Modal, Row } from 'react-bootstrap';
 import Swal from 'sweetalert2';
+import Alert from '../../../shared/plugins/alerts';
 
 
 const ItemEditForm = ({ isOpen, data, onClose, token, itemId }) => {
@@ -17,9 +18,8 @@ const ItemEditForm = ({ isOpen, data, onClose, token, itemId }) => {
         initialValues: {
             id: existingItemId,
             descripcion: "",
-            productoId: 0,
-            plataformaId: 0,
-            stock: 0 // Added stock field with default value 0
+            productoId: '',
+            plataformaId: '',
         },
         validationSchema: yup.object().shape({
             descripcion: yup.string().required("Campo obligatorio"),
@@ -40,7 +40,7 @@ const ItemEditForm = ({ isOpen, data, onClose, token, itemId }) => {
                 if (!response.error) {
                   data();
                   handleClose();
-                  Swal.fire({
+                  Alert.fire({
                     icon: 'success',
                     title: 'Éxito',
                     text: 'El item se ha actualizado correctamente.'
@@ -57,11 +57,13 @@ const ItemEditForm = ({ isOpen, data, onClose, token, itemId }) => {
               }
             } catch (error) {
               console.log(error);
-              Swal.fire({
+              Alert.fire({
                 icon: 'error',
                 title: 'Error',
                 text: 'Ha ocurrido un error al actualizar el item.'
               });
+            }finally{
+                handleClose();
             }
           },
           
@@ -79,12 +81,12 @@ const handleClose = () => {
             headers: { Authorization: `Bearer ${token}` },
           })
             .then((response) => {
+            console.table(response)
               form.setValues({
-                id: response.id,
-                descripcion: response.descripcion,
-                productoId: response.productoId,
-                plataformaId: response.plataformaId,
-                stock: response.stock // Added stock field
+                id: response[0].id,
+                descripcion: response[0].descripcion,
+                productoId: response[0].producto_fk,
+                plataformaId: response[0].plataforma_fk,
               });
             })
             .catch((error) => {
@@ -183,19 +185,7 @@ const handleClose = () => {
                             <span className="error-text">{form.errors.descripcion}</span>
                         )}
                     </Form.Group>
-                    <Form.Group className="mb-3">
-                        <Form.Label htmlFor="stock">Stock</Form.Label> {/* Added stock field */}
-                        <Form.Control
-                            name="stock"
-                            placeholder=""
-                            value={form.values.stock}
-                            onChange={form.handleChange}
-                            type="number"
-                        />
-                        {form.errors.stock && (
-                            <span className="error-text">{form.errors.stock}</span>
-                        )}
-                    </Form.Group>
+                   
                     <Form.Group className="mb-3">
                         <Row>
                             <Col className="text-end">

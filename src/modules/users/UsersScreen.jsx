@@ -1,48 +1,43 @@
-import React, { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../auth/authContext";
-import AxiosClient from "../../shared/plugins/axios";
-import { Badge, Button } from "react-bootstrap";
-import FeatherIcon from "feather-icons-react/build/FeatherIcon";
-import DataTable from "react-data-table-component";
-import ItemForm from "./components/ItemForm";
-import ItemEditForm from "./components/ItemEditForm";
+import React, { useContext, useEffect, useState } from 'react';
+import AxiosClient from '../../shared/plugins/axios';
+import { AuthContext } from '../auth/authContext';
+import Alert from '../../shared/plugins/alerts';
+import { Badge, Button } from 'react-bootstrap';
+import FeatherIcon from 'feather-icons-react/build/FeatherIcon';
+import DataTable from 'react-data-table-component';
+import UsersForm from './components/UsersForm';
+import EditUserForm from './components/EditUserForm';
 
-const ItemScreen = () => {
-    const user = useContext(AuthContext);
+const UsersScreen = () => {
+    const { user } = useContext(AuthContext);
     const { token } = user;
-    const [items, setItems] = useState([]);
-    const [showModalForm, setShowModalForm] = useState(false);
-    const [showModalEditForm, setShowModalEditForm] = useState(false);
-    const [selectedFamily, setSelectedFamily] = useState(null);
+    const [users, setUsers] = useState([]);
+    const [showModal, setShowModal] = useState(false);
+    const [showModalEdit, setShowModalEdit] = useState(false);
+    const [selectedPerson, setSelectedPerson] = useState({});
 
-    const getAllItems = async () => {
+    const getAllUsers = async () => {
         try {
             const response = await AxiosClient({
-                url: "/item/",
+                url: "/personal/",
                 method: "GET",
-                headers: { Authorization: `Bearer ${token}` },
-            });
-            setItems(response);
+                headers: { Authorization: `Beaer ${token}` }
+            })
+            console.log(response)
+            setUsers(response);
         } catch (error) {
-            console.log(error);
+            Alert.fire({
+                title: "ERROR",
+                icon: "x",
+                text: "Error al obtener todos los usuarios",
+                confirmButtonText: "Aceptar"
+            })
         }
-    };
-    const changeStatus = async (id) => {
-        try {
-            const response = await AxiosClient({
-                url: `/item/status/${id}`,
-                method: "PUT",
-                headers: { Authorization: `Bearer ${token}` },
-            });
-        } catch (error) {
-            console.log(error);
-        } finally {
-            getAllItems();
-        }
-    };
+    }
+
+
     useEffect(() => {
-        getAllItems();
-        document.title = "Items";
+        getAllUsers();
     }, []);
     const columns = React.useMemo(() => [
         {
@@ -50,31 +45,39 @@ const ItemScreen = () => {
             selector: (row) => row.id,
         },
         {
-            name: "Plataforma",
-            selector: (row) => row.plataforma,
+            name: "Nombre",
+            selector: (row) => row.name,
             sortable: true,
             fixed: true,
         },
         {
-            name: "Titulo",
-            selector: (row) => row.titulo,
+            name: "Cumpleaños",
+            selector: (row) => row.birthday,
             sortable: true,
             fixed: true,
         },
         {
-            name: "Descripción",
-            selector: (row) => row.descripcion,
+            name: "Direccion",
+            selector: (row) => row.address,
+            sortable: true,
+            fixed: true,
+        },
+        {
+            name: "Username/Email",
+            selector: (row) => row.username,
             sortable: true,
             fixed: true,
         },
         {
             name: "Estado de renta",
             selector: (row) => {
-                switch (row.estado) {
+                switch (row.rol_fk) {
                     case 1:
-                        return "Disponible";
+                        return "ADMINISTRADOR";
                     case 2:
-                        return "Rentado";
+                        return "CAJERO";
+                    case 3:
+                        return "USUARIO";
                     default:
                         return "Desconocido";
                 }
@@ -100,8 +103,8 @@ const ItemScreen = () => {
                         type="btn btn-outline-warning btn-circle me-1"
                         size={16}
                         onClick={() => {
-                            setSelectedFamily(row.id);
-                            setShowModalEditForm(true);
+                            setSelectedPerson(row);
+                            setShowModalEdit(true);
                         }}
                     >
                         <FeatherIcon icon={"edit"} />
@@ -111,7 +114,7 @@ const ItemScreen = () => {
                         <Button
                             variant="danger"
                             size={15}
-                            onClick={() => changeStatus(row.id)}
+                        //onClick={() => changeStatus(row.id)}
                         >
                             <FeatherIcon icon={"trash"} />
                         </Button>
@@ -119,7 +122,7 @@ const ItemScreen = () => {
                         <Button
                             variant="success"
                             size={15}
-                            onClick={() => changeStatus(row.id)}
+                        //onClick={() => changeStatus(row.id)}
                         >
                             <FeatherIcon icon={"save"} />
                         </Button>
@@ -144,20 +147,21 @@ const ItemScreen = () => {
                         <DataTable
                             title={
                                 <div style={{ display: "flex", flexDirection: "row" }}>
-                                    <div style={{ width: "95%", paddingTop: 3 }}>Items</div>
-
+                                    <div style={{ width: "95%", paddingTop: 3 }}>Usuarios</div>
                                     <div>
                                         <FeatherIcon
                                             className="DataIcon"
                                             icon={"plus"}
-                                            onClick={() => setShowModalForm(true)}
+                                            onClick={() => {
+                                                setShowModal(true);
+                                            }}
                                             style={{ height: 40, width: 40 }}
                                         />
                                     </div>
                                 </div>
                             }
                             columns={columns}
-                            data={items}
+                            data={users}
                             pagination
                             highlightOnHover
                             paginationPerPage={8}
@@ -168,25 +172,20 @@ const ItemScreen = () => {
                         />
                     </div>
                 </div>
+                <UsersForm
+                    isOpen={showModal}
+                    onClose={() => setShowModal(false)}
+                    data={getAllUsers}
+                    token={token} />
+                <EditUserForm 
+                isOpen={showModalEdit}
+                onClose={()=> setShowModalEdit(false)}
+                data={getAllUsers}
+                person={selectedPerson}
+                token={token}/>
             </div>
-            <ItemForm
-                isOpen={showModalForm}
-                data={getAllItems}
-                onClose={() => setShowModalForm(false)}
-                token={token}
-            />
-            ,
-            {selectedFamily && (
-                <ItemEditForm
-                    isOpen={showModalEditForm}
-                    data={getAllItems}
-                    onClose={() => setShowModalEditForm(false)}
-                    token={token}
-                    itemId={selectedFamily}
-                />
-            )}
         </>
     );
-};
+}
 
-export default ItemScreen;
+export default UsersScreen;
