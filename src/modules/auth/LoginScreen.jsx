@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "./authContext";
 import * as yup from "yup";
 import AxiosClient from "../../shared/plugins/axios";
-import { Form, Button } from "react-bootstrap";
+import { Form, Button, Spinner } from "react-bootstrap";
 import '../../utils/styles/login.css'
 import Alert from "../../shared/plugins/alerts";
 import RecoverPassword from "./RecoverPassword";
@@ -14,6 +14,8 @@ export const LoginScreen = () => {
   const [success, setSuccess] = useState(false);
   const [failure, setFailure] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [loadingLogin, setLoadingLogin] = useState(false);
 
   const [showRecover, setShowRecover] = useState(false);
 
@@ -55,6 +57,7 @@ export const LoginScreen = () => {
       setExpanded(!expanded);
       if (isLogin === true) {
         try {
+          setLoadingLogin(true);
           const response = await AxiosClient({
             url: "/auth/",
             method: "POST",
@@ -71,8 +74,11 @@ export const LoginScreen = () => {
         } catch (err) {
           console.log(err);
           handleLogin(false);
+        }finally{
+          setLoadingLogin(false);
         }
       } else if (isLogin === false) {
+        setLoading(true);
         try {
           const response = await AxiosClient({
             url: "/user/",
@@ -98,6 +104,8 @@ export const LoginScreen = () => {
           handleLogin(false);
         } finally {
           setIsLogin(true);
+          setLoading(false);
+
         }
       }
 
@@ -162,9 +170,23 @@ export const LoginScreen = () => {
                       onClick={() => setExpanded(!expanded)}
                       className='btn-hover gradient-custom-2 formBoton'
                       type="submit"
+                      disabled={loadingLogin}
                       disable={!(formik.isValid && formik.dirty)}
                     >
-                      INICIAR
+                     {loadingLogin ? (
+                        <>
+                        <Spinner
+                        as="span"
+                        animation="border"
+                        size="sm"
+                        role="status"
+                        aria-hidden="true"/>
+                        Cargando...
+                        </>
+                      ):(
+                        'Iniciar'
+                      )}
+                      
                     </Button>
                   </div>
                 </Form.Group>
@@ -248,9 +270,22 @@ export const LoginScreen = () => {
                       onClick={() => setExpanded(!expanded)}
                       className='btn-hover gradient-custom-2 formBoton'
                       type="submit"
+                      disabled={loading}
                       disable={!(formik.isValid && formik.dirty)}
                     >
-                      INICIAR
+                      {loading ? (
+                        <>
+                        <Spinner
+                        as="span"
+                        animation="border"
+                        size="sm"
+                        role="status"
+                        aria-hidden="true"/>
+                        Cargando...
+                        </>
+                      ):(
+                        'Registrarse'
+                      )}
                     </Button>
                   </div>
                 </Form.Group>

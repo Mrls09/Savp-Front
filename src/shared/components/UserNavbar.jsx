@@ -29,6 +29,19 @@ const UserNavbar = () => {
     const [cartModalOpen, setCartModalOpen] = useState(false);
     const [items, setItems] = useState([]);
 
+    const getItems = async () => {
+        try {
+          const response = await AxiosClient({
+            url: `/item/`,
+            method: 'GET',
+          });
+          setItems(response);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      
+
     const openCartModal = () => {
         setCartModalOpen(true);
     };
@@ -38,6 +51,7 @@ const UserNavbar = () => {
     };
 
     useEffect(() => {
+        getItems();
         getAllProducts();
     }, [])
     const getAllProducts = async () => {
@@ -85,7 +99,7 @@ const UserNavbar = () => {
                 <FaSearch className='DataIcon NavIcon' onClick={() => {
                     setShowSearchModal(true)
                 }} style={{ height: 25, width: 25, marginBottom: 0 }} />
-            <FaShoppingCart className='DataIcon' onClick={openCartModal} />
+                <FaShoppingCart className='DataIcon' onClick={openCartModal} />
 
                 <FaFont className='DataIcon NavIcon' onClick={toggleFontSize} />
                 <IoIosSettings className='DataIcon' onClick={toggleDarkMode} style={{ height: 50, width: 32, marginBottom: 0 }}> {darkMode ? 'Modo Claro' : 'Modo Oscuro'}</IoIosSettings>
@@ -100,11 +114,12 @@ const UserNavbar = () => {
                 isOpen={showSearchModal}
                 onClose={() => setShowSearchModal(false)}
                 products={products} />
-            <ShoppingCartModal
+            {cartModalOpen && <ShoppingCartModal
                 isOpen={cartModalOpen}
                 onClose={closeCartModal}
                 items={items}
-            />    
+            />}
+
         </div>
     );
 }

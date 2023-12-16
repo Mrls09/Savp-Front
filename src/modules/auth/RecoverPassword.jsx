@@ -1,13 +1,15 @@
 import { Axios } from 'axios';
 import { useFormik } from 'formik';
-import React from 'react';
-import { Button, Col, Form, Modal, Row, } from 'react-bootstrap';
+import React, { useState } from 'react';
+import { Button, Col, Form, Modal, Row, Spinner, } from 'react-bootstrap';
 import * as yup from "yup"
 import AxiosClient from '../../shared/plugins/axios';
 import Alert from '../../shared/plugins/alerts';
 
 
-const RecoverPassword = ({isOpen, onClose}) => {
+const RecoverPassword = ({ isOpen, onClose }) => {
+
+    const [loading, setLoading] = useState(false);
 
     const form = useFormik({
         initialValues: {
@@ -18,6 +20,7 @@ const RecoverPassword = ({isOpen, onClose}) => {
         }),
         onSubmit: async (values) => {
             try {
+                setLoading(true);
                 const response = await AxiosClient({
                     url: "/auth/reset/",
                     method: "POST",
@@ -27,7 +30,7 @@ const RecoverPassword = ({isOpen, onClose}) => {
                     Alert.fire({
                         text: "Se ha enviado un correo con tu nueva contraseña",
                         title: "Exitoso",
-                        icon:"check",
+                        icon: "check",
                         confirmButtonText: "Aceptar",
                         confirmButtonColor: "#3085d6"
                     })
@@ -36,12 +39,14 @@ const RecoverPassword = ({isOpen, onClose}) => {
                 Alert.fire({
                     text: "Error al recuperar tu contraseña, valida que tu correo este registrado",
                     title: "Error",
-                    icon:"x",
+                    icon: "x",
                     confirmButtonText: "Aceptar",
                     confirmButtonColor: "#3085d6"
                 })
-            }finally{
+            } finally {
                 handleClose();
+                setLoading(false);
+
             }
         }
     })
@@ -60,10 +65,10 @@ const RecoverPassword = ({isOpen, onClose}) => {
                     <Form.Group className='mb-2'>
                         <Form.Label htmlFor='email'>Email</Form.Label>
                         <Form.Control
-                        name='email'
-                        placeholder=''
-                        value={form.values.email}
-                        onChange={form.handleChange}/>
+                            name='email'
+                            placeholder=''
+                            value={form.values.email}
+                            onChange={form.handleChange} />
                         {form.errors.email && (
                             <span className='error-text'>{form.errors.email}</span>
                         )}
@@ -78,9 +83,27 @@ const RecoverPassword = ({isOpen, onClose}) => {
                                 >
                                     &nbsp;Cancelar
                                 </Button>
-                                <Button variant="outline-success" type="submit">
-                                    &nbsp;Enviar
+                                <Button
+                                    variant="outline-success"
+                                    disabled={loading}
+                                    type='submit'
+                                >
+                                    {loading ? (
+                                        <>
+                                            <Spinner
+                                                as="span"
+                                                animation="border"
+                                                size="sm"
+                                                role="status"
+                                                aria-hidden="true"
+                                            />
+                                            Cargando...
+                                        </>
+                                    ) : (
+                                        'Enviar'
+                                    )}
                                 </Button>
+
                             </Col>
                         </Row>
                     </Form.Group>

@@ -13,6 +13,7 @@ import ItemScreen from "../../modules/item/ItemScreen";
 import ProfileUser from "../../modules/profile/ProfileUser";
 import CashierDashboard from "../../modules/cashier/CashierDashboard";
 import UsersScreen from "../../modules/users/UsersScreen";
+import LogScreen from "../../modules/log/LogScreen";
 
 export const AppRouter = () => {
   return (
@@ -47,6 +48,7 @@ const PrivateRoutes = () => {
             <Route path="/item" element={<ItemScreen />} />
             <Route path="/perfil" element={<ProfileUser/>} />
             <Route path="/usuarios" element={<UsersScreen/>}/>
+            <Route path="/log" element={<LogScreen/>}/>
             <Route index element={<PlatformScreen />} />
           </Route>
         </Routes>

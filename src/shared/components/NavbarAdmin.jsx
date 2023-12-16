@@ -36,6 +36,7 @@ const NavbarAdmin = () => {
                 <Button variant='none' href='/item'>Item</Button>
                 <Button variant='none' href='/usuarios'>Usuarios</Button>
                 <Button variant='none' href='/perfil'>Perfil</Button>
+                <Button variant='none' href='/log'>Logs</Button>
                 <Button variant='none' onClick={handleLogout}><FeatherIcon icon={'log-out'} /></Button>
 
             </div>

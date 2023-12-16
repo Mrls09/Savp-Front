@@ -7,6 +7,7 @@ import { AuthContext } from '../auth/authContext';
 import { URL } from '../../utils/constans';
 import { useTheme } from '../../shared/components/ThemeContext';
 import { useFontSize } from '../../shared/components/FontSizeContext';
+import { useCarrito } from '../shoppingCart/CarritoContext'; // Ajusta la ruta según tu estructura de archivos
 
 
 const UserHome = () => {
@@ -18,12 +19,42 @@ const UserHome = () => {
     const [selectedItem, setSelectedItem] = useState();
     const { darkMode } = useTheme();
     const { fontSize, changeFontSize } = useFontSize();
+    const { addToCarrito } = useCarrito();
 
+    const checkRentas = async () => {
+        try {
+            const response = await AxiosClient({
+                url:`/renta/demora/${user.user.data.id}/${user.user.data.username}`,
+                method:"GET"
+            })
+            console.log(response)
+            if(response.length !== 0){
+                Alert.fire({
+                    title:"IMPORTANTE",
+                    icon:"x",
+                    text:"REVISAR TUS RENTAS, TIENES PENDIENTES DE ENTREGA!! EVITA MULTAS"
+                })
+            }
+        } catch (error) {
+            Alert.fire({
+                title:"ERROR",
+                icon:"x",
+                text:"SURGIO UN ERROR "
+            })
+        }
+    }
+    
+    
 
-
+    const handleAgregarAlCarrito = () => {
+        console.log(selectedItem)
+        addToCarrito(parseInt(selectedItem, 10));
+        closeModal();
+      };
 
     useEffect(() => {
         cargarDatos();
+        checkRentas();
     }, []);
     const randomizarPosiciones = (lista) => {
         const listaRandomizada = [...lista];
@@ -73,44 +104,7 @@ const UserHome = () => {
         setShowModal(false);
     }
 
-    const addToCart = async () => {
-        console.log(`Agregando al carrito: ${selectedProduct?.titulo}`);
-        try {
-            const response = await AxiosClient({
-                url: "/renta/",
-                method: "POST",
-                data: {
-                    userId: user.user.data.id,
-                    itemId: selectedItem,
-                    cajeroId: 2
-                }
-            })
-            if (!response.error) {
-                const res = await AxiosClient({
-                    url: `/item/status/${selectedItem}`,
-                    method: "PUT"
-                })
-                console.log(res);
-                Alert.fire({
-                    title: "ITEM AÑADIDO EXITOSAMENTE",
-                    text: "El item fue añadido con exito a tus productos",
-                    icon: "check",
-                    confirmButtonColor: "#3085d6",
-                    confirmButtonText: "Aceptar",
-                });
-            };
-        } catch (error) {
-            Alert.fire({
-                title: "ERROR AL AÑADIRO ITEM",
-                text: "Hubo un error al añadir item, intente otra vez",
-                icon: "x",
-                confirmButtonColor: "#3085d6",
-                confirmButtonText: "Aceptar",
-            });
-        } finally {
-            closeModal();
-        }
-    }
+   
 
     return (
         <div className={`UserMainContainer ${darkMode ? 'dark-mode' : 'light-mode'}`}>
@@ -195,7 +189,7 @@ const UserHome = () => {
                     <Button variant="secondary" onClick={closeModal}>
                         Cerrar
                     </Button>
-                    <Button variant="primary" onClick={addToCart}>
+                    <Button variant="primary" onClick={handleAgregarAlCarrito}>
                         Solicitar
                     </Button>
                 </Modal.Footer>

@@ -18,6 +18,7 @@ const EditInfUser = ({ isOpen, userData, onClose, token, data }) => {
 
   const form = useFormik({
     initialValues: {
+      user_fk: userData?.id,
       name: userData?.name || "",
       birthday: userData?.birthday || "",
       address: userData?.address || "",
@@ -31,7 +32,7 @@ const EditInfUser = ({ isOpen, userData, onClose, token, data }) => {
       try {
         const response = await AxiosClient({
           method: "PUT",
-          url: "/personal/",
+          url: "/personal/solo/",
           data: JSON.stringify(values),
           headers: { Authorization: `Bearer ${token}` },
         });
